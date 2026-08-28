@@ -371,6 +371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GachaGame.GachaUIController
   gachaTable: {fileID: 11400000, guid: 5136fc96898886947a4b6f852339036c, type: 2}
+  startingCurrency: 0
 --- !u!114 &969556829
 MonoBehaviour:
   m_ObjectHideFlags: 0
