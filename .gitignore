@@ -8,6 +8,9 @@ Logs/
 UserSettings/
 MemoryCaptures/
 
+# Ad-hoc editor verification screenshots (not portfolio deliverables)
+Assets/Screenshots/
+
 # Asset meta backups
 *.tmp
 
