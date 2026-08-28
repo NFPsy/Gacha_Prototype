@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef2cadc0dd63f5e49a5395a456205fec, type: 3}
+  m_Name: DefaultGachaTable
+  m_EditorClassIdentifier: Assembly-CSharp::Gacha.GachaTableSO
+  tiers:
+  - tier: 0
+    probabilityPercent: 60
+    valueScore: 1
+    displayColor: {r: 0.4784, g: 0.498, b: 0.6196, a: 1}
+  - tier: 1
+    probabilityPercent: 25
+    valueScore: 4
+    displayColor: {r: 0.3725, g: 0.6588, b: 0.8784, a: 1}
+  - tier: 2
+    probabilityPercent: 12
+    valueScore: 16
+    displayColor: {r: 0.6627, g: 0.5451, b: 0.9412, a: 1}
+  - tier: 3
+    probabilityPercent: 3
+    valueScore: 64
+    displayColor: {r: 0.9098, g: 0.7098, b: 0.302, a: 1}
+  pityCount: 60
+  pullCost: 200
+  dailyFreeCurrency: 300
