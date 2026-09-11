@@ -51,6 +51,7 @@ namespace GachaGame
         private int selectedRunCount;
 
         private VisualElement simHistogram;
+        private VisualElement simHistogramCounts;
         private Label simHistogramCaption;
 
         // 실제 뽑기 확률 계산을 담당하는 객체.
@@ -105,6 +106,7 @@ namespace GachaGame
             }
 
             simHistogram = root.Q<VisualElement>("sim-histogram");
+            simHistogramCounts = root.Q<VisualElement>("sim-histogram-counts");
             simHistogramCaption = root.Q<Label>("sim-histogram-caption");
 
             // "몇 회 시뮬레이션할지" 고르는 칩 버튼들을 연결합니다.
@@ -251,6 +253,7 @@ namespace GachaGame
         private void RenderPityHistogram(GachaSimulationResult result)
         {
             simHistogram.Clear();
+            simHistogramCounts.Clear();
 
             int maxBucketValue = 1;
             foreach (int value in result.PityGapHistogram)
@@ -258,6 +261,13 @@ namespace GachaGame
 
             foreach (int value in result.PityGapHistogram)
             {
+                // 막대 위에 실제 카운트(정확한 횟수)를 항상 보이게 표시합니다.
+                // (UI Toolkit의 VisualElement.tooltip은 에디터 전용이라 빌드된 게임에서는 뜨지 않으므로
+                //  마우스오버 대신 숫자를 바로 보여주는 방식을 씁니다.)
+                var countLabel = new Label(value.ToString());
+                countLabel.AddToClassList("gacha-hist-count-label");
+                simHistogramCounts.Add(countLabel);
+
                 var bar = new VisualElement();
                 bar.AddToClassList("gacha-hist-bar");
                 float heightPercent = Mathf.Max(2f, value / (float)maxBucketValue * 100f);

@@ -360,6 +360,23 @@
     margin-bottom: 8px;
 }
 
+/* 막대 위에 실제 카운트 숫자를 보여주는 줄. 막대와 같은 개수(12개) · 같은 flex-grow·margin을 써서
+   숫자 하나하나가 바로 아래 막대와 정확히 같은 칸(열)에 오도록 맞춥니다. */
+.gacha-hist-counts {
+    flex-direction: row;
+    height: 14px;
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+.gacha-hist-count-label {
+    flex-grow: 1;
+    margin-right: 2px;
+    font-size: 9px;
+    color: var(--color-muted);
+    -unity-text-align: lower-center;
+}
+
 .gacha-hist {
     flex-direction: row;
     align-items: flex-end;

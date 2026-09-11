@@ -77,6 +77,7 @@
 
                 <ui:VisualElement name="sim-histogram-block" class="gacha-hist-block">
                     <ui:Label text="천장까지 뽑기 횟수 분포" class="gacha-hist-title" />
+                    <ui:VisualElement name="sim-histogram-counts" class="gacha-hist-counts" />
                     <ui:VisualElement name="sim-histogram" class="gacha-hist" />
                     <ui:Label text="" name="sim-histogram-caption" class="gacha-hist-caption" />
                 </ui:VisualElement>
