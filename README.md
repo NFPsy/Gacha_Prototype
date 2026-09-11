@@ -24,9 +24,9 @@
 1. 확률 설계 문서화 — 등급별 확률·천장·기대값 확정
 2. `GachaTableSO` (ScriptableObject) 기반 데이터 구조 설계
 3. `GachaDrawer` — 가중치 랜덤 + 천장 카운터 로직
-4. `GachaUIController` — UI Toolkit(UXML/USS) 기반 결과 표시 화면
+4. `GachaUIController` — UI Toolkit(UXML/USS) 기반 결과 표시 화면. 좌(뽑기 액션) · 우(검증 시뮬레이터) 2단 레이아웃, 색상 토큰(`--color-*` 커스텀 프로퍼티) 기반 팔레트, 버튼 hover/focus/active/disabled 전체 상태 구현
 5. `PlayerWallet` — 재화 소모·획득 흐름 연결
-6. `GachaSimulator` — N회 반복 뽑기로 실제 확률 분포를 설계값과 비교 검증
+6. `GachaSimulator` — N회(100 / 1,000 / 10,000 / 100,000회 선택 가능) 반복 뽑기로 실제 확률 분포를 설계값과 비교 검증. 등급별 설계값 대비 편차(Δ) 표시, 천장 도달까지 걸린 뽑기 횟수 분포 히스토그램으로 천장 로직 준수 여부를 시각적으로 확인
 
 100,000회 시뮬레이션 검증 결과: R 59.6% / SR 24.8% / SSR 12.1% / LR 3.6% (설계값 대비 오차 ±0.6%p 이내), 천장 위반 0건.
 
