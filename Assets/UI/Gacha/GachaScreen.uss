@@ -29,7 +29,7 @@
     height: 100%;
     flex: 1;
     background-color: var(--color-paper);
-    padding: 24px;
+    padding: 28px;
 }
 
 /* ==== 화면 골격: 기존 "전부 중앙정렬 세로 스택" 대신
@@ -44,13 +44,13 @@
     border-width: 1px;
     border-color: var(--color-rule);
     border-radius: 14px;
-    padding: 20px;
+    padding: 24px;
 }
 
 .gacha-draw-panel {
-    width: 320px;
+    width: 400px;
     align-items: flex-start;
-    margin-right: 20px;
+    margin-right: 28px;
 }
 
 .gacha-sim-section {
@@ -60,39 +60,39 @@
 
 .gacha-title {
     color: var(--color-ink);
-    font-size: 20px;
+    font-size: 26px;
     -unity-font-style: bold;
-    margin-bottom: 8px;
+    margin-bottom: 14px;
 }
 
 .gacha-currency-label {
     color: var(--color-accent);
-    font-size: 14px;
+    font-size: 18px;
     -unity-font-style: bold;
-    margin-bottom: 16px;
+    margin-bottom: 26px;
 }
 
 .gacha-card {
-    width: 140px;
-    height: 190px;
-    border-width: 3px;
-    border-radius: 14px;
+    width: 180px;
+    height: 240px;
+    border-width: 4px;
+    border-radius: 16px;
     border-color: rgba(255, 255, 255, 0.15);
     background-color: rgba(255, 255, 255, 0.04);
     align-items: center;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 28px;
 }
 
 .gacha-card-label {
-    font-size: 22px;
+    font-size: 30px;
     -unity-font-style: bold;
     color: var(--color-neutral);
 }
 
 .gacha-button-row {
     flex-direction: row;
-    margin-bottom: 16px;
+    margin-bottom: 26px;
 }
 
 /* ==== 버튼: 주(primary) / 보조(secondary) 위계를 명확히 분리하고
@@ -102,9 +102,9 @@
     color: var(--color-accent);
     border-color: var(--color-accent-border);
     border-width: 1px;
-    border-radius: 9px;
-    padding: 10px 18px;
-    font-size: 13px;
+    border-radius: 10px;
+    padding: 13px 22px;
+    font-size: 16px;
     -unity-font-style: bold;
     transition-property: background-color, opacity;
     transition-duration: 0.12s;
@@ -131,7 +131,7 @@
     background-color: rgba(255, 255, 255, 0);
     color: var(--color-muted);
     border-color: rgba(255, 255, 255, 0);
-    margin-left: 8px;
+    margin-left: 10px;
 }
 
 .gacha-button.secondary:hover {
@@ -152,18 +152,18 @@
    (시뮬레이터 섹션과 컴포넌트 언어 통일) ==== */
 .gacha-pity-block {
     width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: 18px;
 }
 
 .gacha-pity-label {
     color: var(--color-muted);
-    font-size: 12px;
-    margin-bottom: 4px;
+    font-size: 15px;
+    margin-bottom: 8px;
 }
 
 .gacha-pity-track {
-    height: 6px;
-    border-radius: 3px;
+    height: 9px;
+    border-radius: 4px;
     background-color: var(--color-paper-3);
     overflow: hidden;
 }
@@ -171,13 +171,13 @@
 .gacha-pity-fill {
     height: 100%;
     background-color: var(--color-accent);
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
 .gacha-message-label {
-    margin-top: 4px;
+    margin-top: 6px;
     color: var(--color-danger);
-    font-size: 12px;
+    font-size: 14px;
 }
 
 /* 성공/안내 메시지(예: 일일 재화 지급)는 빨간색이 아니라 초록색으로 구분 */
@@ -231,7 +231,7 @@
 /* 실행 횟수 선택 칩 */
 .gacha-chip-row {
     flex-direction: row;
-    margin-bottom: 8px;
+    margin-bottom: 16px;
 }
 
 .gacha-chip {
@@ -239,11 +239,11 @@
     color: var(--color-muted);
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0);
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 11px;
+    border-radius: 7px;
+    padding: 8px 13px;
+    font-size: 13px;
     -unity-font-style: normal;
-    margin-right: 6px;
+    margin-right: 7px;
 }
 
 .gacha-chip:hover {
@@ -263,35 +263,35 @@
 
 .gacha-section-title {
     color: var(--color-ink);
-    font-size: 14px;
+    font-size: 18px;
     -unity-font-style: bold;
-    margin-bottom: 10px;
+    margin-bottom: 18px;
 }
 
 .gacha-sim-results {
     width: 100%;
-    margin-top: 12px;
+    margin-top: 22px;
 }
 
 .gacha-sim-row {
     flex-direction: row;
     align-items: center;
-    margin-bottom: 6px;
+    margin-bottom: 16px;
 }
 
 /* 등급 색상을 보여주는 작은 동그란 점 (텍스트 없이 색상만 표시) */
 .gacha-sim-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    margin-right: 6px;
+    width: 13px;
+    height: 13px;
+    border-radius: 7px;
+    margin-right: 8px;
     flex-shrink: 0;
 }
 
 /* 점 옆에 붙는 등급 이름(R/SR/SSR/LR) 글자 — 항상 잘 보이도록 배경과 상관없는 밝은 고정색을 씁니다 */
 .gacha-sim-tier-label {
-    width: 32px;
-    font-size: 12px;
+    width: 40px;
+    font-size: 15px;
     -unity-font-style: bold;
     color: var(--color-ink);
 }
@@ -299,11 +299,11 @@
 /* 막대 그래프 트랙 — 그 안에 "설계값 막대"와 "실측값 막대"를 겹쳐서 보여줍니다 */
 .gacha-sim-track {
     flex-grow: 1;
-    height: 10px;
+    height: 14px;
     background-color: rgba(255, 255, 255, 0.06);
-    border-radius: 5px;
-    margin-left: 6px;
-    margin-right: 6px;
+    border-radius: 7px;
+    margin-left: 8px;
+    margin-right: 8px;
     overflow: hidden;
 }
 
@@ -324,17 +324,17 @@
 }
 
 .gacha-sim-text {
-    width: 150px;
-    font-size: 10px;
+    width: 180px;
+    font-size: 13px;
     color: var(--color-muted);
     -unity-text-align: middle-right;
 }
 
 /* 설계값 대비 편차(Δ) — 기본은 중립색, 위/아래로 벌어지면 초록/빨강으로 표시 */
 .gacha-sim-delta {
-    width: 46px;
-    margin-left: 6px;
-    font-size: 10px;
+    width: 56px;
+    margin-left: 8px;
+    font-size: 13px;
     color: var(--color-neutral);
     -unity-text-align: middle-right;
 }
@@ -349,30 +349,30 @@
 
 /* 천장까지 뽑기 횟수 분포 히스토그램 */
 .gacha-hist-block {
-    margin-top: 16px;
+    margin-top: 32px;
     width: 100%;
 }
 
 .gacha-hist-title {
     color: var(--color-ink);
-    font-size: 12px;
+    font-size: 16px;
     -unity-font-style: bold;
-    margin-bottom: 8px;
+    margin-bottom: 14px;
 }
 
 /* 막대 위에 실제 카운트 숫자를 보여주는 줄. 막대와 같은 개수(12개) · 같은 flex-grow·margin을 써서
    숫자 하나하나가 바로 아래 막대와 정확히 같은 칸(열)에 오도록 맞춥니다. */
 .gacha-hist-counts {
     flex-direction: row;
-    height: 14px;
+    height: 18px;
     width: 100%;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
 }
 
 .gacha-hist-count-label {
     flex-grow: 1;
-    margin-right: 2px;
-    font-size: 9px;
+    margin-right: 3px;
+    font-size: 11px;
     color: var(--color-muted);
     -unity-text-align: lower-center;
 }
@@ -380,29 +380,29 @@
 .gacha-hist {
     flex-direction: row;
     align-items: flex-end;
-    height: 80px;
+    height: 165px;
     width: 100%;
 }
 
 .gacha-hist-bar {
     flex-grow: 1;
-    margin-right: 2px;
+    margin-right: 3px;
     background-color: var(--color-accent);
     opacity: 0.8;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
     min-height: 2px;
 }
 
 .gacha-hist-caption {
-    margin-top: 6px;
-    font-size: 10px;
+    margin-top: 10px;
+    font-size: 12px;
     color: var(--color-muted);
     white-space: normal;
 }
 
 .gacha-sim-pity-check {
-    margin-top: 10px;
-    font-size: 11px;
+    margin-top: 16px;
+    font-size: 14px;
     color: var(--color-success);
 }
