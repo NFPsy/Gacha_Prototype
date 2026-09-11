@@ -1,62 +1,88 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <ui:Style src="project://database/Assets/UI/Gacha/GachaScreen.uss" />
     <ui:VisualElement name="root" class="gacha-root">
-        <ui:Label text="가챠 시스템 프로토타입" name="title" class="gacha-title" />
-        <ui:Label text="보유 재화: 0" name="currency-label" class="gacha-currency-label" />
-        <ui:VisualElement name="card" class="gacha-card">
-            <ui:Label text="?" name="card-label" class="gacha-card-label" />
-        </ui:VisualElement>
-        <ui:VisualElement name="button-row" class="gacha-button-row">
-            <ui:Button text="1회 뽑기" name="draw-button" class="gacha-button" />
-            <ui:Button text="일일 재화 받기" name="claim-daily-button" class="gacha-button secondary" />
-        </ui:VisualElement>
-        <ui:Label text="천장까지 0 / 60" name="pity-label" class="gacha-pity-label" />
-        <ui:Label text="" name="message-label" class="gacha-message-label" />
-
-        <ui:VisualElement name="sim-section" class="gacha-sim-section">
-            <ui:Label text="검증 시뮬레이터 (설계값 vs 실측값)" name="sim-title" class="gacha-section-title" />
-            <ui:Button text="1,000회 시뮬레이션" name="simulate-button" class="gacha-button secondary" />
-
-            <ui:VisualElement name="sim-results" class="gacha-sim-results">
-                <ui:VisualElement name="sim-row-R" class="gacha-sim-row">
-                    <ui:VisualElement class="gacha-sim-dot tier-r-fill" />
-                    <ui:Label text="R" class="gacha-sim-tier-label" />
-                    <ui:VisualElement class="gacha-sim-track">
-                        <ui:VisualElement name="sim-designed-R" class="gacha-sim-designed" />
-                        <ui:VisualElement name="sim-actual-R" class="gacha-sim-actual tier-r-fill" />
-                    </ui:VisualElement>
-                    <ui:Label name="sim-text-R" text="설계 -.-% / 실측 -.-%" class="gacha-sim-text" />
+        <ui:VisualElement name="hud" class="gacha-hud">
+            <ui:VisualElement name="draw-panel" class="gacha-panel gacha-draw-panel">
+                <ui:Label text="가챠 시스템 프로토타입" name="title" class="gacha-title" />
+                <ui:Label text="보유 재화: 0" name="currency-label" class="gacha-currency-label" />
+                <ui:VisualElement name="card" class="gacha-card">
+                    <ui:Label text="?" name="card-label" class="gacha-card-label" />
                 </ui:VisualElement>
-                <ui:VisualElement name="sim-row-SR" class="gacha-sim-row">
-                    <ui:VisualElement class="gacha-sim-dot tier-sr-fill" />
-                    <ui:Label text="SR" class="gacha-sim-tier-label" />
-                    <ui:VisualElement class="gacha-sim-track">
-                        <ui:VisualElement name="sim-designed-SR" class="gacha-sim-designed" />
-                        <ui:VisualElement name="sim-actual-SR" class="gacha-sim-actual tier-sr-fill" />
-                    </ui:VisualElement>
-                    <ui:Label name="sim-text-SR" text="설계 -.-% / 실측 -.-%" class="gacha-sim-text" />
+                <ui:VisualElement name="button-row" class="gacha-button-row">
+                    <ui:Button text="1회 뽑기" name="draw-button" class="gacha-button" />
+                    <ui:Button text="일일 재화 받기" name="claim-daily-button" class="gacha-button secondary" />
                 </ui:VisualElement>
-                <ui:VisualElement name="sim-row-SSR" class="gacha-sim-row">
-                    <ui:VisualElement class="gacha-sim-dot tier-ssr-fill" />
-                    <ui:Label text="SSR" class="gacha-sim-tier-label" />
-                    <ui:VisualElement class="gacha-sim-track">
-                        <ui:VisualElement name="sim-designed-SSR" class="gacha-sim-designed" />
-                        <ui:VisualElement name="sim-actual-SSR" class="gacha-sim-actual tier-ssr-fill" />
+                <ui:VisualElement name="pity-block" class="gacha-pity-block">
+                    <ui:Label text="천장까지 0 / 60" name="pity-label" class="gacha-pity-label" />
+                    <ui:VisualElement name="pity-track" class="gacha-pity-track">
+                        <ui:VisualElement name="pity-fill" class="gacha-pity-fill" style="width: 0%;" />
                     </ui:VisualElement>
-                    <ui:Label name="sim-text-SSR" text="설계 -.-% / 실측 -.-%" class="gacha-sim-text" />
                 </ui:VisualElement>
-                <ui:VisualElement name="sim-row-LR" class="gacha-sim-row">
-                    <ui:VisualElement class="gacha-sim-dot tier-lr-fill" />
-                    <ui:Label text="LR" class="gacha-sim-tier-label" />
-                    <ui:VisualElement class="gacha-sim-track">
-                        <ui:VisualElement name="sim-designed-LR" class="gacha-sim-designed" />
-                        <ui:VisualElement name="sim-actual-LR" class="gacha-sim-actual tier-lr-fill" />
-                    </ui:VisualElement>
-                    <ui:Label name="sim-text-LR" text="설계 -.-% / 실측 -.-%" class="gacha-sim-text" />
-                </ui:VisualElement>
+                <ui:Label text="" name="message-label" class="gacha-message-label" />
             </ui:VisualElement>
 
-            <ui:Label text="" name="sim-pity-check-label" class="gacha-sim-pity-check" />
+            <ui:VisualElement name="sim-section" class="gacha-panel gacha-sim-section">
+                <ui:Label text="검증 시뮬레이터 (설계값 vs 실측값)" name="sim-title" class="gacha-section-title" />
+
+                <ui:VisualElement name="sim-run-row" class="gacha-chip-row">
+                    <ui:Button text="100회" name="run-chip-100" class="gacha-chip" />
+                    <ui:Button text="1,000회" name="run-chip-1000" class="gacha-chip is-active" />
+                    <ui:Button text="10,000회" name="run-chip-10000" class="gacha-chip" />
+                    <ui:Button text="100,000회" name="run-chip-100000" class="gacha-chip" />
+                </ui:VisualElement>
+                <ui:Button text="시뮬레이션 실행" name="simulate-button" class="gacha-button secondary" />
+
+                <ui:VisualElement name="sim-results" class="gacha-sim-results">
+                    <ui:VisualElement name="sim-row-R" class="gacha-sim-row">
+                        <ui:VisualElement class="gacha-sim-dot tier-r-fill" />
+                        <ui:Label text="R" class="gacha-sim-tier-label" />
+                        <ui:VisualElement class="gacha-sim-track">
+                            <ui:VisualElement name="sim-designed-R" class="gacha-sim-designed" />
+                            <ui:VisualElement name="sim-actual-R" class="gacha-sim-actual tier-r-fill" />
+                        </ui:VisualElement>
+                        <ui:Label name="sim-text-R" text="설계 -.-% / 실측 -.-%" class="gacha-sim-text" />
+                        <ui:Label name="sim-delta-R" text="—" class="gacha-sim-delta" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="sim-row-SR" class="gacha-sim-row">
+                        <ui:VisualElement class="gacha-sim-dot tier-sr-fill" />
+                        <ui:Label text="SR" class="gacha-sim-tier-label" />
+                        <ui:VisualElement class="gacha-sim-track">
+                            <ui:VisualElement name="sim-designed-SR" class="gacha-sim-designed" />
+                            <ui:VisualElement name="sim-actual-SR" class="gacha-sim-actual tier-sr-fill" />
+                        </ui:VisualElement>
+                        <ui:Label name="sim-text-SR" text="설계 -.-% / 실측 -.-%" class="gacha-sim-text" />
+                        <ui:Label name="sim-delta-SR" text="—" class="gacha-sim-delta" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="sim-row-SSR" class="gacha-sim-row">
+                        <ui:VisualElement class="gacha-sim-dot tier-ssr-fill" />
+                        <ui:Label text="SSR" class="gacha-sim-tier-label" />
+                        <ui:VisualElement class="gacha-sim-track">
+                            <ui:VisualElement name="sim-designed-SSR" class="gacha-sim-designed" />
+                            <ui:VisualElement name="sim-actual-SSR" class="gacha-sim-actual tier-ssr-fill" />
+                        </ui:VisualElement>
+                        <ui:Label name="sim-text-SSR" text="설계 -.-% / 실측 -.-%" class="gacha-sim-text" />
+                        <ui:Label name="sim-delta-SSR" text="—" class="gacha-sim-delta" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="sim-row-LR" class="gacha-sim-row">
+                        <ui:VisualElement class="gacha-sim-dot tier-lr-fill" />
+                        <ui:Label text="LR" class="gacha-sim-tier-label" />
+                        <ui:VisualElement class="gacha-sim-track">
+                            <ui:VisualElement name="sim-designed-LR" class="gacha-sim-designed" />
+                            <ui:VisualElement name="sim-actual-LR" class="gacha-sim-actual tier-lr-fill" />
+                        </ui:VisualElement>
+                        <ui:Label name="sim-text-LR" text="설계 -.-% / 실측 -.-%" class="gacha-sim-text" />
+                        <ui:Label name="sim-delta-LR" text="—" class="gacha-sim-delta" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="sim-histogram-block" class="gacha-hist-block">
+                    <ui:Label text="천장까지 뽑기 횟수 분포" class="gacha-hist-title" />
+                    <ui:VisualElement name="sim-histogram" class="gacha-hist" />
+                    <ui:Label text="" name="sim-histogram-caption" class="gacha-hist-caption" />
+                </ui:VisualElement>
+
+                <ui:Label text="" name="sim-pity-check-label" class="gacha-sim-pity-check" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

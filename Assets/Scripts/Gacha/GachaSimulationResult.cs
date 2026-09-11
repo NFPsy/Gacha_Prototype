@@ -19,16 +19,26 @@ namespace Gacha
         // 천장(확률이 아니라 강제 지급)으로 나온 횟수
         public int PityForcedCount { get; }
 
+        // "최상위 등급을 뽑기까지 몇 번 걸렸는지"를 구간(버킷)별로 묶은 분포입니다.
+        // 예: HistogramBucketSize=5 라면 [0]=1~5회, [1]=6~10회, ... 로 몇 번 걸렸는지의 빈도를 담습니다.
+        // 이 분포가 마지막 구간(천장 횟수 부근)을 넘어서지 않는다면 천장 로직이 제대로 지켜진 것입니다.
+        public IReadOnlyList<int> PityGapHistogram { get; }
+        public int HistogramBucketSize { get; }
+
         public GachaSimulationResult(
             int totalPulls,
             Dictionary<GachaTier, int> counts,
             int maxPullsWithoutRarest,
-            int pityForcedCount)
+            int pityForcedCount,
+            IReadOnlyList<int> pityGapHistogram,
+            int histogramBucketSize)
         {
             TotalPulls = totalPulls;
             Counts = counts;
             MaxPullsWithoutRarest = maxPullsWithoutRarest;
             PityForcedCount = pityForcedCount;
+            PityGapHistogram = pityGapHistogram;
+            HistogramBucketSize = histogramBucketSize;
         }
 
         // 특정 등급이 "실제로" 나온 비율(%)을 계산합니다.
@@ -37,6 +47,12 @@ namespace Gacha
         {
             if (TotalPulls <= 0) return 0f;
             return Counts.TryGetValue(tier, out int count) ? (count * 100f / TotalPulls) : 0f;
+        }
+
+        // 실측값이 설계값보다 얼마나(%p) 높거나 낮은지. 양수면 설계보다 더 자주 나온 것입니다.
+        public float GetDeltaPercent(GachaTier tier, float designedPercent)
+        {
+            return GetActualPercent(tier) - designedPercent;
         }
     }
 }

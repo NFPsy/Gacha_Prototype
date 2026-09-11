@@ -34,6 +34,7 @@ namespace GachaGame
         private VisualElement card;
         private Label cardLabel;
         private Label pityLabel;
+        private VisualElement pityFill;
         private Label currencyLabel;
         private Label messageLabel;
         private Label simPityCheckLabel;
@@ -42,6 +43,15 @@ namespace GachaGame
         private Dictionary<GachaTier, VisualElement> simDesignedBars;
         private Dictionary<GachaTier, VisualElement> simActualBars;
         private Dictionary<GachaTier, Label> simTexts;
+        private Dictionary<GachaTier, Label> simDeltas;
+
+        // "N회 시뮬레이션" 실행 횟수를 고르는 칩 버튼들. Key는 실행 횟수(100/1000/10000/100000).
+        private Dictionary<int, Button> runCountChips;
+        private readonly List<(Button button, Action handler)> runCountChipBindings = new List<(Button, Action)>();
+        private int selectedRunCount;
+
+        private VisualElement simHistogram;
+        private Label simHistogramCaption;
 
         // 실제 뽑기 확률 계산을 담당하는 객체.
         // 버튼을 누를 때마다 새로 만들지 않고 딱 1번만 만들어서 계속 재사용해야
@@ -74,6 +84,7 @@ namespace GachaGame
             card = root.Q<VisualElement>("card");
             cardLabel = root.Q<Label>("card-label");
             pityLabel = root.Q<Label>("pity-label");
+            pityFill = root.Q<VisualElement>("pity-fill");
             currencyLabel = root.Q<Label>("currency-label");
             messageLabel = root.Q<Label>("message-label");
             simPityCheckLabel = root.Q<Label>("sim-pity-check-label");
@@ -83,13 +94,35 @@ namespace GachaGame
             simDesignedBars = new Dictionary<GachaTier, VisualElement>();
             simActualBars = new Dictionary<GachaTier, VisualElement>();
             simTexts = new Dictionary<GachaTier, Label>();
+            simDeltas = new Dictionary<GachaTier, Label>();
             foreach (var tier in TierDisplay.Keys)
             {
                 string tierName = tier.ToString(); // 예: GachaTier.LR -> "LR"
                 simDesignedBars[tier] = root.Q<VisualElement>($"sim-designed-{tierName}");
                 simActualBars[tier] = root.Q<VisualElement>($"sim-actual-{tierName}");
                 simTexts[tier] = root.Q<Label>($"sim-text-{tierName}");
+                simDeltas[tier] = root.Q<Label>($"sim-delta-{tierName}");
             }
+
+            simHistogram = root.Q<VisualElement>("sim-histogram");
+            simHistogramCaption = root.Q<Label>("sim-histogram-caption");
+
+            // "몇 회 시뮬레이션할지" 고르는 칩 버튼들을 연결합니다.
+            runCountChips = new Dictionary<int, Button>
+            {
+                { 100, root.Q<Button>("run-chip-100") },
+                { 1000, root.Q<Button>("run-chip-1000") },
+                { 10000, root.Q<Button>("run-chip-10000") },
+                { 100000, root.Q<Button>("run-chip-100000") },
+            };
+            foreach (var kvp in runCountChips)
+            {
+                int count = kvp.Key; // 클로저에서 안전하게 쓰려고 지역 변수로 복사
+                Action handler = () => SelectRunCount(count);
+                kvp.Value.clicked += handler;
+                runCountChipBindings.Add((kvp.Value, handler));
+            }
+            SelectRunCount(simulationPullCount);
 
             drawer = new GachaDrawer(gachaTable);
             wallet = new PlayerWallet(startingCurrency);
@@ -97,7 +130,7 @@ namespace GachaGame
             // 버튼 글자에 실제 비용/획득량을 데이터 그대로 표시 (숫자를 코드에 직접 적지 않기 위함)
             drawButton.text = $"1회 뽑기 ({gachaTable.pullCost})";
             claimDailyButton.text = $"일일 재화 받기 (+{gachaTable.dailyFreeCurrency})";
-            simulateButton.text = $"{simulationPullCount:N0}회 시뮬레이션";
+            simulateButton.text = "시뮬레이션 실행";
 
             // 버튼이 클릭되면 각각의 함수를 실행하도록 "구독"(등록)합니다.
             // += 는 "이 이벤트가 발생하면 이 함수도 같이 실행해줘"라는 의미입니다.
@@ -107,6 +140,7 @@ namespace GachaGame
 
             UpdateCurrencyLabel();
             UpdatePityLabel();
+            UpdateDrawButtonState();
         }
 
         // OnDisable은 이 컴포넌트가 비활성화될 때(꺼질 때) 자동으로 호출됩니다.
@@ -117,6 +151,16 @@ namespace GachaGame
             if (drawButton != null) drawButton.clicked -= OnDrawClicked;
             if (claimDailyButton != null) claimDailyButton.clicked -= OnClaimDailyClicked;
             if (simulateButton != null) simulateButton.clicked -= OnSimulateClicked;
+            foreach (var (button, handler) in runCountChipBindings) button.clicked -= handler;
+            runCountChipBindings.Clear();
+        }
+
+        // 실행 횟수 칩(100/1,000/10,000/100,000) 중 하나를 선택 상태로 표시합니다.
+        private void SelectRunCount(int count)
+        {
+            selectedRunCount = count;
+            foreach (var kvp in runCountChips)
+                kvp.Value.EnableInClassList("is-active", kvp.Key == count);
         }
 
         // "1회 뽑기" 버튼을 눌렀을 때 실제로 실행되는 함수입니다.
@@ -126,10 +170,10 @@ namespace GachaGame
             //    TrySpend가 false를 반환하면(재화 부족) 뽑기를 진행하지 않고 안내 메시지만 보여줍니다.
             if (!wallet.TrySpend(gachaTable.pullCost))
             {
-                messageLabel.text = $"재화가 부족합니다! (필요 {gachaTable.pullCost} / 보유 {wallet.CurrentCurrency})";
+                SetMessage($"재화가 부족합니다! (필요 {gachaTable.pullCost} / 보유 {wallet.CurrentCurrency})", isSuccess: false);
                 return;
             }
-            messageLabel.text = "";
+            SetMessage("", isSuccess: false);
 
             // 2) 확률표에 따라 뽑기 결과 하나를 계산
             var result = drawer.DrawOne();
@@ -152,6 +196,7 @@ namespace GachaGame
             // 6) 재화 잔액과 천장 진행 상황 텍스트 갱신
             UpdateCurrencyLabel();
             UpdatePityLabel();
+            UpdateDrawButtonState();
         }
 
         // "일일 재화 받기" 버튼을 눌렀을 때 실행되는 함수입니다.
@@ -160,8 +205,9 @@ namespace GachaGame
         private void OnClaimDailyClicked()
         {
             wallet.Add(gachaTable.dailyFreeCurrency);
-            messageLabel.text = $"일일 재화 {gachaTable.dailyFreeCurrency}를 받았습니다.";
+            SetMessage($"일일 재화 {gachaTable.dailyFreeCurrency}를 받았습니다.", isSuccess: true);
             UpdateCurrencyLabel();
+            UpdateDrawButtonState();
         }
 
         // "N회 시뮬레이션" 버튼을 눌렀을 때 실행되는 함수입니다.
@@ -169,7 +215,7 @@ namespace GachaGame
         // GachaSimulator가 독립된 가상의 뽑기를 N번 돌려서 "설계값과 실측값이 얼마나 비슷한지" 보여줍니다.
         private void OnSimulateClicked()
         {
-            var result = GachaSimulator.Run(gachaTable, simulationPullCount);
+            var result = GachaSimulator.Run(gachaTable, selectedRunCount);
 
             foreach (var tier in TierDisplay.Keys)
             {
@@ -182,7 +228,15 @@ namespace GachaGame
                 simDesignedBars[tier].style.width = Length.Percent(designedPercent / scaleMax * 100f);
                 simActualBars[tier].style.width = Length.Percent(actualPercent / scaleMax * 100f);
                 simTexts[tier].text = $"설계 {designedPercent:F1}% / 실측 {actualPercent:F1}%";
+
+                // 설계값 대비 편차(Δ) — ±0.05%p 이내는 중립, 그 밖은 초록/빨강으로 표시
+                float delta = result.GetDeltaPercent(tier, designedPercent);
+                simDeltas[tier].text = (delta >= 0 ? "+" : "") + delta.ToString("F1") + "p";
+                simDeltas[tier].EnableInClassList("gacha-sim-delta-up", delta > 0.05f);
+                simDeltas[tier].EnableInClassList("gacha-sim-delta-down", delta < -0.05f);
             }
+
+            RenderPityHistogram(result);
 
             // 천장(피티) 시스템이 실제로도 지켜졌는지 함께 보여줍니다.
             // MaxPullsWithoutRarest(최대 연속 미획득 횟수)가 pityCount를 넘지 않으면 정상입니다.
@@ -190,6 +244,31 @@ namespace GachaGame
             simPityCheckLabel.text = pityHeld
                 ? $"천장 보장 확인됨: LR 미획득 최대 연속 {result.MaxPullsWithoutRarest}회 (천장 {gachaTable.pityCount}회 이내), 천장 발동 {result.PityForcedCount}회"
                 : $"⚠ 천장 위반 감지: 최대 연속 {result.MaxPullsWithoutRarest}회 (천장 {gachaTable.pityCount}회 초과 — 로직을 점검하세요)";
+        }
+
+        // "LR을 뽑기까지 몇 번 걸렸는지" 분포를 막대(히스토그램)로 그립니다.
+        // 막대가 천장 횟수 부근의 마지막 구간에만 모여 있으면 천장이 잘 지켜지고 있다는 뜻입니다.
+        private void RenderPityHistogram(GachaSimulationResult result)
+        {
+            simHistogram.Clear();
+
+            int maxBucketValue = 1;
+            foreach (int value in result.PityGapHistogram)
+                if (value > maxBucketValue) maxBucketValue = value;
+
+            foreach (int value in result.PityGapHistogram)
+            {
+                var bar = new VisualElement();
+                bar.AddToClassList("gacha-hist-bar");
+                float heightPercent = Mathf.Max(2f, value / (float)maxBucketValue * 100f);
+                bar.style.height = Length.Percent(heightPercent);
+                simHistogram.Add(bar);
+            }
+
+            int bucketSize = result.HistogramBucketSize;
+            int bucketCount = result.PityGapHistogram.Count;
+            simHistogramCaption.text =
+                $"{bucketSize}회 단위 구간 · 막대 {bucketCount}개 (최대 {bucketCount * bucketSize}회까지)";
         }
 
         private void UpdateCurrencyLabel()
@@ -200,6 +279,26 @@ namespace GachaGame
         private void UpdatePityLabel()
         {
             pityLabel.text = $"천장까지 {drawer.PullsSincePity} / {gachaTable.pityCount}";
+
+            float progress = gachaTable.pityCount > 0
+                ? (float)drawer.PullsSincePity / gachaTable.pityCount
+                : 0f;
+            pityFill.style.width = Length.Percent(Mathf.Clamp01(progress) * 100f);
+        }
+
+        // 재화가 부족하면 "1회 뽑기" 버튼을 눌러도 소용없다는 걸 클릭 전에 미리 보여줍니다
+        // (버튼이 흐려지고 클릭도 막힘 — USS의 :disabled 상태와 연결됨)
+        private void UpdateDrawButtonState()
+        {
+            drawButton.SetEnabled(wallet.CurrentCurrency >= gachaTable.pullCost);
+        }
+
+        // 안내 문구가 에러(재화 부족)인지 성공(일일 재화 지급 등)인지에 따라
+        // 같은 라벨이라도 다른 색(danger/success)이 입혀지도록 클래스를 토글합니다.
+        private void SetMessage(string text, bool isSuccess)
+        {
+            messageLabel.text = text;
+            messageLabel.EnableInClassList("gacha-message-success", isSuccess);
         }
     }
 }

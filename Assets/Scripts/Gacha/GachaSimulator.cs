@@ -31,6 +31,12 @@ namespace Gacha
             int maxGap = 0;      // 지금까지 확인된 "최대" 연속 미획득 횟수
             int currentGap = 0;  // 마지막으로 최상위 등급을 뽑은 뒤 지금까지의 연속 횟수
 
+            // "최상위 등급을 뽑기까지 몇 번 걸렸는지"를 5회 단위 구간으로 묶어서 셉니다.
+            // (예: 천장이 60이면 구간은 12개: 1~5, 6~10, ... 56~60회)
+            const int bucketSize = 5;
+            int bucketCount = Math.Max(1, (int)Math.Ceiling(table.pityCount / (double)bucketSize));
+            var histogram = new int[bucketCount];
+
             for (int i = 0; i < pullCount; i++)
             {
                 var result = drawer.DrawOne();
@@ -42,6 +48,11 @@ namespace Gacha
                 {
                     // 최상위 등급이 나왔으니 연속 미획득 기록을 갱신하고 다시 0부터 셉니다.
                     if (currentGap > maxGap) maxGap = currentGap;
+
+                    int gapLength = currentGap + 1; // 이번 성공 뽑기까지 포함한 길이
+                    int bucketIndex = Math.Min(bucketCount - 1, (gapLength - 1) / bucketSize);
+                    histogram[bucketIndex]++;
+
                     currentGap = 0;
                 }
                 else
@@ -51,7 +62,7 @@ namespace Gacha
             }
             if (currentGap > maxGap) maxGap = currentGap; // 시뮬레이션이 끝난 시점까지의 미획득 구간도 반영
 
-            return new GachaSimulationResult(pullCount, counts, maxGap, pityForcedCount);
+            return new GachaSimulationResult(pullCount, counts, maxGap, pityForcedCount, histogram, bucketSize);
         }
     }
 }
